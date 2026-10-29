@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dream factory · ti</title>
+<link rel="icon" href="https://df.trestech.com.br/img/logo1.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body>
+
+<div id="progress"></div>
+<header class="top">
+  <span class="logo"><img src="https://df.trestech.com.br/img/logo1.png" alt=""><span><b>dream</b>factory</span><em>/ ti</em></span>
+  <span class="hint">← → navegar · f tela cheia · t tema · esc fechar</span>
+</header>
+<div id="hud">
+  <button class="navbtn" data-nav="-1" aria-label="slide anterior">←</button>
+  <div id="counter"><b>01</b> / 01</div>
+  <button class="navbtn" data-nav="1" aria-label="próximo slide">→</button>
+</div>
+
+<main id="deck">
+  <section class="slide cover">
+    <div class="orb r" aria-hidden="true"></div>
+    <p class="kicker r">apresentação da equipe de ti · 2026</p>
+    <h1 class="cover__title" data-split>transformamos a ti em uma <span class="g">plataforma de inovação.</span></h1>
+    <p class="lead r">sistemas, dados e infraestrutura que sustentam oito plataformas de entretenimento ao vivo — um país inteiro em movimento.</p>
+  </section>
+
+  <!-- ponytail: números ilustrativos — trocar pelos reais antes de apresentar -->
+  <!-- data-live + data-panel: a passada seguinte abre a janela com o painel (gráfico) em vez de um iframe -->
+  <section class="slide score" data-dark data-live data-panel="pie-resolucao pie-chamados plataformas">
+    <span class="tag r">métricas de ti</span>
+    <h2 class="big" data-split>a operação, <span class="g">em números.</span></h2>
+    <div class="score__grid">
+      <div class="r" data-from="pie-resolucao"><b data-count="93" data-suf="%">0</b><span>taxa de resolução de chamados</span></div>
+      <div class="r" data-from="pie-chamados"><b data-count="4820" data-pre="+">0</b><span>chamados resolvidos no ano</span></div>
+      <div class="r" data-from="plataformas"><b data-count="5">0</b><span>plataformas suportadas</span></div>
+    </div>
+  </section>
+
+  <!-- fluxo: o passador anda pelas estações (.station) antes de ir ao próximo slide. animações em FLOW_FX (main.js) -->
+  <section class="slide stage" data-flow>
+    <span class="flow__big" aria-hidden="true"></span>
+    <div class="flow__head">
+      <span class="tag r">como trabalhamos</span>
+      <h2 class="big" data-split>como nasce uma <span class="g">aplicação.</span></h2>
+      <p class="lead r">seis passos, da ideia ao ar.</p>
+    </div>
+    <div class="flow">
+      <div class="flow__track">
+        <span class="flow__line"></span>
+
+        <div class="flow__intro">
+          <small>o fluxo</small>
+          <p>vamos mostrar, passo a passo, como uma <b>ideia</b> vira <b>aplicação</b> aqui dentro: do primeiro rascunho ao sistema no ar, entregue e monitorado.</p>
+        </div>
+
+        <article class="station">
+          <div class="viz viz--idea">
+            <span class="ripple"></span><span class="ripple"></span><span class="ripple"></span>
+            <span class="spark"></span>
+            <span class="bubble b1">tive uma ideia!</span>
+            <span class="bubble b2">precisamos resolver isso</span>
+          </div>
+          <span class="node"><i></i></span>
+          <div class="station__txt"><span class="station__n">01</span><h3>a ideia chega</h3><p>por um colaborador, ou quando a necessidade aparece.</p></div>
+        </article>
+
+        <article class="station">
+          <div class="viz viz--paper">
+            <div class="sheet">
+              <svg viewBox="0 0 400 230" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M24 18 L168 16 L170 212 L22 214 Z"/>
+                <path d="M40 40 L150 39"/><path d="M40 52 L118 52"/>
+                <path d="M40 80 L152 79 L152 100 L40 101 Z"/><path d="M40 114 L152 113 L152 134 L40 135 Z"/>
+                <path d="M62 162 L130 161 L131 184 L61 185 Z"/>
+                <path d="M184 112 C204 92 214 92 232 108"/><path d="M224 100 L233 109 L222 114"/>
+                <path d="M246 18 L382 17 L384 213 L244 214 Z"/>
+                <path d="M262 38 L366 37"/>
+                <path d="M266 190 L266 150"/><path d="M290 190 L290 118"/><path d="M314 190 L314 136"/><path d="M338 190 L338 98"/><path d="M362 190 L362 126"/>
+                <path d="M258 196 L372 195"/>
+              </svg>
+            </div>
+            <span class="postit">tela de login</span>
+          </div>
+          <span class="node"><i></i></span>
+          <div class="station__txt"><span class="station__n">02</span><h3>papel e caneta</h3><p>descrevemos a ideia e já desenhamos as telas no papel.</p></div>
+        </article>
+
+        <article class="station">
+          <div class="viz viz--bank">
+            <div class="search"><span class="typed">buscar: login, dashboard</span><i class="caret"></i></div>
+            <ul class="repos">
+              <li>login</li><li>dashboard</li><li>upload</li><li>relatórios</li><li>notificações</li><li>pagamentos</li>
+            </ul>
+            <span class="scan"></span>
+          </div>
+          <span class="node"><i></i></span>
+          <div class="station__txt"><span class="station__n">03</span><h3>reaproveitar</h3><p>buscamos nos nossos bancos de código o que já pode ser usado.</p></div>
+        </article>
+
+        <article class="station">
+          <div class="viz viz--code">
+            <div class="ed__bar"><i></i><i></i><i></i><span>app.jsx</span></div>
+<pre class="ed"><code><span class="ln"><b class="k">import</b> { login, dashboard } <b class="k">from</b> <b class="s">'@df/kit'</b></span>
+<span class="ln"> </span>
+<span class="ln"><b class="k">export default function</b> <b class="f">App</b>() {</span>
+<span class="ln">  <b class="k">const</b> user = login.<b class="f">useSession</b>()</span>
+<span class="ln">  <b class="k">return</b> &lt;<b class="f">Dashboard</b> user={user} /&gt;</span>
+<span class="ln">}</span></code></pre>
+          </div>
+          <span class="node"><i></i></span>
+          <div class="station__txt"><span class="station__n">04</span><h3>mão no código</h3><p>começamos a estruturar a ideia no editor de código.</p></div>
+        </article>
+
+        <article class="station">
+          <div class="viz viz--mvp">
+            <div class="days"><b>0</b><span>dias</span></div>
+            <ol class="cal"><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ol>
+            <span class="badge">mvp entregue ✓</span>
+          </div>
+          <span class="node"><i></i></span>
+          <div class="station__txt"><span class="station__n">05</span><h3>mvp em <span class="g">20 dias</span></h3><p>mvp completamente funcional, entregue em 20 dias.</p></div>
+        </article>
+
+        <article class="station">
+          <div class="viz viz--live">
+            <svg class="ekg" viewBox="0 0 400 120" fill="none">
+              <path class="ekg__pulse" pathLength="1" d="M0 70 H30 C35 70 38 62 44 62 C50 62 53 70 58 70 H68 L74 76 L84 18 L94 112 L102 64 L108 70 H128 C136 70 140 56 152 56 C164 56 168 70 176 70 H230 C235 70 238 62 244 62 C250 62 253 70 258 70 H268 L274 76 L284 18 L294 112 L302 64 L308 70 H328 C336 70 340 56 352 56 C364 56 368 70 376 70 H400"/>
+            </svg>
+            <i class="ekg__dot"></i>
+            <div class="status"><i></i>no ar · monitorada</div>
+            <span class="badge">entregue ✓</span>
+          </div>
+          <span class="node"><i></i></span>
+          <div class="station__txt"><span class="station__n">06</span><h3>no ar e monitorada</h3><p>após o período de testes e ajustes, a aplicação é entregue e monitorada.</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- xodós: tambor de revólver. o passador gira o tambor e cada aplicação salta da câmara na janela #live. itens em XODOS (main.js) -->
+  <section class="slide xodo" data-drum>
+    <div class="xodo__head">
+      <span class="tag r">xodós da casa</span>
+      <h2 class="big" data-split>os xodós <span class="g">da casa.</span></h2>
+    </div>
+    <div class="xodo__body">
+      <div class="rev r"><div class="rev__cyl"></div><span class="rev__hub"><img src="https://df.trestech.com.br/img/logo1.png" alt=""></span></div>
+      <div class="xodo__info">
+        <small>aplicações e websites</small>
+        <p>o que a gente <b>criou aqui dentro</b> e tem orgulho de mostrar. a cada passada o tambor gira e a aplicação abre ao vivo.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- coming soon: cartões "trancados" (borrados, esqueleto piscando); cada passada revela um (revealGo, main.js) -->
+  <section class="slide soon-slide" data-reveal>
+    <span class="tag r">coming soon</span>
+    <h2 class="big" data-split>o que vem <span class="g">por aí.</span></h2>
+    <p class="lead r">cinco novidades saindo do forno. uma por passada.</p>
+    <div class="soon-grid">
+      <span class="soon-grp r" style="grid-column:span 3">websites</span>
+      <span class="soon-grp r" style="grid-column:span 2">sistemas</span>
+      <article class="soon r">
+        <div class="sk sk--site"><i></i><i></i><i></i><i></i></div><span class="soon__shine"></span>
+        <div class="soon__txt"><span class="soon__n">01 · website</span><h3>dream factory</h3><p>o novo site do grupo: marcas, agenda e contatos numa vitrine só.</p></div>
+        <span class="soon__status"><i></i>em breve</span>
+      </article>
+      <article class="soon r">
+        <div class="sk sk--site"><i></i><i></i><i></i><i></i></div><span class="soon__shine"></span>
+        <div class="soon__txt"><span class="soon__n">02 · website</span><h3>experience</h3><p>o novo site da dream experience, com portfólio e cases de brand experience.</p></div>
+        <span class="soon__status"><i></i>em breve</span>
+      </article>
+      <article class="soon r">
+        <div class="sk sk--site"><i></i><i></i><i></i><i></i></div><span class="soon__shine"></span>
+        <div class="soon__txt"><span class="soon__n">03 · website</span><h3>dream venue</h3><p>os espaços do dream venue, com agenda e contato direto para eventos.</p></div>
+        <span class="soon__status"><i></i>em breve</span>
+      </article>
+      <article class="soon r">
+        <div class="sk sk--pipe"><i></i><i></i><i></i><i></i></div><span class="soon__shine"></span>
+        <div class="soon__txt"><span class="soon__n">04 · performance</span><h3>pipeline interativo</h3><p>cada etapa da área de performance visível e atualizada em tempo real.</p></div>
+        <span class="soon__status"><i></i>em breve</span>
+      </article>
+      <article class="soon r">
+        <div class="sk sk--stock"><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="soon__shine"></span>
+        <div class="soon__txt"><span class="soon__n">05 · facilities</span><h3>controle de estoque</h3><p>entradas, saídas e alerta de reposição para o facilities.</p></div>
+        <span class="soon__status"><i></i>em breve</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="slide cta" id="last" data-dark>
+    <span class="tag tag--light r">contatos & encerramento</span>
+    <h2 class="big" data-split>vamos criar o próximo sistema?</h2>
+    <a class="mail r" href="mailto:ti@dreamfactory.com.br">ti@dreamfactory.com.br</a>
+    <div class="btns r">
+      <button class="btn btn--light" id="restart">reiniciar apresentação <b>↺</b></button>
+    </div>
+  </section>
+</main>
+
+<div id="live" aria-hidden="true">
+  <div class="backdrop"></div>
+  <div class="win" role="dialog" aria-label="live preview">
+    <div class="win__bar">
+      <span class="d r1" title="fechar (esc)" data-act="close"></span>
+      <span class="d y1" title="recolher" data-act="close"></span>
+      <span class="d g1" title="maximizar" data-act="max"></span>
+      <div class="addr"></div>
+      <button class="act" data-act="reload">↻ recarregar</button>
+      <button class="act" data-act="tab">↗ nova aba</button>
+      <button class="act" data-act="close">✕ fechar</button>
+    </div>
+    <div class="frame">
+      <iframe title="live preview" allow="fullscreen; clipboard-read; clipboard-write"></iframe>
+      <div class="loading"><img src="https://df.trestech.com.br/img/logo1.png" alt=""><span class="kicker">carregando</span></div>
+      <!-- painéis: gráficos preenchidos pelo main.js (CHARTS) -->
+      <div class="panel" id="pie-resolucao" data-addr="painel de chamados · taxa de resolução">
+        <div class="pie"><svg viewBox="0 0 200 200" role="img" aria-label="taxa de resolução de chamados"></svg><div class="pie__center"></div></div>
+        <div>
+          <span class="tag">chamados de ti</span>
+          <h2 class="big">taxa de <span class="g">resolução</span> de chamados</h2>
+          <ul class="legend"></ul>
+        </div>
+      </div>
+      <div class="panel" id="pie-chamados" data-addr="painel de chamados · resolvidos no ano">
+        <div class="pie"><svg viewBox="0 0 200 200" role="img" aria-label="chamados resolvidos no ano por área"></svg><div class="pie__center"></div></div>
+        <div>
+          <span class="tag">chamados de ti</span>
+          <h2 class="big">chamados <span class="g">resolvidos</span> no ano</h2>
+          <ul class="legend"></ul>
+        </div>
+      </div>
+      <!-- plataformas: o passador percorre os cards (data-step) e o painel ao lado mostra o descritivo de cada um.
+           texto de cada plataforma: edite o <p class="plat__desc"> do card (fica escondido no card, aparece no painel) -->
+      <div class="panel panel--list" id="plataformas" data-addr="ti · plataformas suportadas">
+        <div class="plats__main">
+          <h2 class="big">plataformas <span class="g">suportadas</span> pela ti</h2>
+          <div class="plats">
+            <section>
+              <h3 class="plats__head">de terceiros <span>2</span></h3>
+              <ul>
+                <li class="plat" data-step><img src="img/mopa.webp" alt="tela inicial do mopa"><div class="plat__name"><b>mopa</b></div>
+                  <p class="plat__desc">aprovações financeiras num só painel: orçamentos e solicitações de pagamento, com o que já foi aprovado, o que está em análise e o que aguarda a sua aprovação.</p></li>
+                <li class="plat" data-step><img src="img/mocah.webp" alt="tela inicial do mocah"><div class="plat__name"><b>mocah</b></div>
+                  <p class="plat__desc">o mesmo fluxo de aprovações aplicado a pessoas: headcount e contratações, do pedido à aprovação final.</p></li>
+              </ul>
+            </section>
+            <section>
+              <h3 class="plats__head">feitas em casa <span>3</span></h3>
+              <ul>
+                <li class="plat" data-step><img src="img/stockloc.webp" alt="tela de login do stockloc"><div class="plat__name"><b>stockloc</b></div>
+                  <p class="plat__desc">estoque e reservas dos eventos, sem planilha: disponibilidade dos ativos, reservas automáticas e controle de estoque.</p></li>
+                <li class="plat" data-step><img src="img/matchdeblocos.webp" alt="tela de login do match de blocos"><div class="plat__name"><b>match de blocos</b></div>
+                  <p class="plat__desc">feito para o carnaval de rua do carnabrasil: briefing da marca, base de blocos e o plano que cabe na verba, num lugar só.</p></li>
+                <li class="plat" data-step><img src="img/radar.webp" alt="tela de login do radar dreamie"><div class="plat__name"><b>radar dreamie</b></div>
+                  <p class="plat__desc">priorização estratégica de eventos: cinco objetivos, sete critérios e uma régua única para decidir onde a marca deve estar.</p></li>
+              </ul>
+            </section>
+          </div>
+        </div>
+        <aside class="plat-info" aria-live="polite">
+          <div class="plat-info__body">
+            <span class="tag">visão geral</span>
+            <h3>5 plataformas</h3>
+            <p>2 de terceiros e 3 feitas em casa, todas suportadas pela equipe de ti.</p>
+          </div>
+          <ol class="plat-info__dots"><li></li><li></li><li></li><li></li><li></li></ol>
+        </aside>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="main.js"></script>
+<!-- fx3d: experimento three.js nos painéis do slide 2. para desligar, apague estas 3 linhas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="img/prints.js"></script>
+<script src="fx3d.js"></script>
+</body>
+</html>
