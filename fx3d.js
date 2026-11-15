@@ -16,6 +16,10 @@
 .fx3d .pie__center span{margin-top:0}
 .fx3d .pie__lbl{position:absolute;left:0;top:0;z-index:1;font-size:clamp(12px,1.4vw,22px);font-weight:700;letter-spacing:-.02em;color:#fff;
   text-shadow:0 1px 8px rgba(0,0,0,.35);pointer-events:none;white-space:nowrap}
+.fx3d .bars{position:relative}
+.fx3d .bars > canvas{position:absolute;pointer-events:none}
+.fx3d .bars svg{position:relative;z-index:1}
+.fx3d .bars path[data-i]{fill-opacity:0}
 .fx3d .panel--list > canvas{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:2}
 .fx3d .plat img{opacity:0!important;transition:none;transform:none!important}
 </style>`);
@@ -123,6 +127,55 @@
     return s;
   }
 
+  /* ---------- barras 3d (crescimento) ----------
+     mesma forma e lugar das barras do svg (que ficam invisíveis por cima, com os textos e o hover).
+     câmera fora do eixo (acima e à direita) com o plano z=0 caindo exato sobre o svg: a frente da barra
+     coincide com a 2d e aparecem o topo e a lateral. a altura vem do svg a cada quadro (o main.js anima) */
+  const BM = 24, BD = 26; // margem do canvas em volta do svg (unidades do viewBox) e profundidade da barra
+  function bars3d(id) {
+    const cfg = CHARTS[id], host = $('.bars', cfg.el), svg = $('svg', host), s = base(host, 30), { scene, camera } = s;
+    scene.add(new T.HemisphereLight(0xffffff, 0xb8c4d6, .7));
+    const key = new T.DirectionalLight(0xffffff, .55); key.position.set(120, 260, 300); scene.add(key);
+    const rim = new T.DirectionalLight(0x7fdcff, .3); rim.position.set(-260, -120, 120); scene.add(rim);
+    s.segs = $$('path[data-i]', svg).map(p => {
+      const x = +p.dataset.x, w = +p.dataset.w, h = 176 - p.dataset.y, r = 4, sh = new T.Shape();
+      sh.moveTo(x, 0); sh.lineTo(x, h - r); sh.quadraticCurveTo(x, h, x + r, h); sh.lineTo(x + w - r, h);
+      sh.quadraticCurveTo(x + w, h, x + w, h - r); sh.lineTo(x + w, 0);
+      const m = new T.Mesh(
+        new T.ExtrudeGeometry(sh, { depth: BD, bevelEnabled: true, bevelThickness: 1.5, bevelSize: .8, bevelSegments: 3, curveSegments: 12 }),
+        new T.MeshPhysicalMaterial({ color: tone(p.style.fill), roughness: .38, metalness: 0, clearcoat: 1, clearcoatRoughness: .25, transparent: true }));
+      m.position.set(0, -176, -BD - 1.5); // base na linha do gráfico (y do svg para baixo = y do mundo negativo); frente em z=0
+      m.userData = { c: p.style.fill, p, h, dim: 1 };
+      scene.add(m);
+      return m;
+    });
+    const C = new T.Vector3(650, 400, 2000); // olho longe, acima e à direita: topo e lateral com a mesma espessura nas duas barras
+    camera.position.copy(C);
+    s.size = () => {
+      const k = host.offsetWidth / host.getBoundingClientRect().width, r = svg.getBoundingClientRect(), hr = host.getBoundingClientRect();
+      const u = r.width * k / 200, w = (200 + 2 * BM) * u; // px por unidade do viewBox
+      if (!w || w === s.w) return;
+      s.w = w; s.renderer.setSize(w, w, false);
+      Object.assign(s.canvas.style, { left: (r.left - hr.left) * k - BM * u + 'px', top: (r.top - hr.top) * k - BM * u + 'px', width: w + 'px', height: w + 'px' });
+      // frustum fora do eixo: o retângulo [-BM, 200+BM] do plano z=0 enche o canvas
+      const n = 1, f = 5000, d = C.z;
+      camera.projectionMatrix.makePerspective((-BM - C.x) / d * n, (200 + BM - C.x) / d * n, (BM - C.y) / d * n, (-200 - BM - C.y) / d * n, n, f);
+      camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
+    };
+    s.start = () => {};
+    s.frame = () => {
+      s.segs.forEach(m => {
+        const u = m.userData, top = 176 - +(u.p.dataset.top ?? u.p.dataset.y); // altura atual: o main.js guarda o topo em data-top
+        m.scale.y = Math.max(top, .001) / u.h;
+        m.visible = top > .5;
+        u.dim = lerp(u.dim, u.p.classList.contains('dim') ? .3 : 1, .15);
+        m.material.opacity = u.dim;
+      });
+      s.renderer.render(scene, camera);
+    };
+    return s;
+  }
+
   /* ---------- prints em placas 3d ---------- */
   function rounded(w, h, r) {
     const s = new T.Shape(), x = -w / 2, y = -h / 2;
@@ -188,7 +241,7 @@
   $$('#live .panel').forEach(panel => new MutationObserver(() => {
     const id = panel.id;
     if (panel.classList.contains('on')) {
-      const s = scenes[id] ||= CHARTS[id] ? donut(id) : panel.classList.contains('panel--list') ? plats(panel) : null;
+      const s = scenes[id] ||= CHARTS[id] ? (CHARTS[id].bars ? bars3d(id) : donut(id)) : panel.classList.contains('panel--list') ? plats(panel) : null;
       if (!s || active.has(s)) return;
       if (!s.ro) (s.ro = new ResizeObserver(() => s.size())).observe(panel);
       s.size(); s.start(); active.add(s);

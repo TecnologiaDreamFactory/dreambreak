@@ -2,20 +2,34 @@
 <html lang="pt-br">
 <head>
 <meta charset="utf-8">
+<!--
+  bibliotecas e recursos de terceiros: tudo local em vendor/, nada vem de cdn.
+  o deck abre como arquivo (file://), sem servidor e sem internet.
+
+  - gsap 3.12.5 ............ vendor/gsap.min.js     animações (passador, contadores, fluxo, carrossel, hq)
+                                                    origem: gsap.com, licença standard da greensock
+  - three.js r128 .......... vendor/three.min.js    efeito 3d das roscas e barras do slide 3 (fx3d.js); sem webgl cai no 2d
+                                                    origem: threejs.org, licença mit. r128 clássico: módulos es não carregam de file://
+  - fonte outfit ........... vendor/fonts/          títulos e textos (google fonts, licença ofl)
+  - fonte pixelify sans .... vendor/fonts/          quadrinhos em pixel art do slide 2 (google fonts, licença ofl)
+                                                    as duas declaradas em vendor/fonts/fonts.css
+  - logo dream factory ..... vendor/logo1.png       cópia de df.trestech.com.br/img/logo1.png
+
+  código próprio: styles.css, main.js, fx3d.js, img/prints.js (prints em data uri para o 3d).
+  a pixel art da hq é canvas puro, sem biblioteca. só o botão "nova aba" do slide 5 usa a internet.
+-->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>dream factory · ti</title>
-<link rel="icon" href="https://df.trestech.com.br/img/logo1.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200..900&display=swap" rel="stylesheet">
+<link rel="icon" href="vendor/logo1.png">
+<link href="vendor/fonts/fonts.css" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="vendor/gsap.min.js"></script>
 </head>
 <body>
 
 <div id="progress"></div>
 <header class="top">
-  <span class="logo"><img src="https://df.trestech.com.br/img/logo1.png" alt=""><span><b>dream</b>factory</span><em>/ ti</em></span>
+  <span class="logo"><img src="vendor/logo1.png" alt=""><span><b>dream</b>factory</span><em>/ ti</em></span>
   <span class="hint">← → navegar · f tela cheia · t tema · esc fechar</span>
 </header>
 <div id="hud">
@@ -32,15 +46,137 @@
     <p class="lead r">sistemas, dados e infraestrutura que sustentam oito plataformas de entretenimento ao vivo — um país inteiro em movimento.</p>
   </section>
 
+  <!-- hq em pixel art: cada passada desenha um quadro (revealGo + REVEAL_FX, main.js). cenas dos canvas em SCENES (main.js) -->
+  <section class="slide hq" data-reveal>
+    <!-- coluna da direita: textos da historinha em cima (data-at = ordem do quadro que traz o texto; some quando a página vira) e o título embaixo -->
+    <div class="hq__side">
+      <div class="hq__story">
+        <!-- marcadores dentro da placa: um por quadro (data-at); a placa cresce aos poucos para abrir espaço para cada um -->
+        <p data-at="0">antes éramos bots. chamado entra, resolvemos o problema da aplicação, chamado fechado.
+          <span class="hq__mark" data-at="0"><span><i>aplicação que não atualiza.</i></span></span>
+          <span class="hq__mark" data-at="1"><span><i>planilha gigante que poderia estar em um banco.</i></span></span>
+          <span class="hq__mark" data-at="2"><span><i>software com indisponibilidade.</i></span></span></p>
+        <p data-at="3">até que um dia o almir desabafou com o rafael.
+          <span class="hq__mark" data-at="4"><span><i>cursos aprovados. aí vieram as noites de estudo: Html, Java, Lógica, GSAP e por aí vai...</i></span></span>
+          <span class="hq__mark" data-at="5"><span><i>a millena veio junto: noites a fio, sem desistir.</i></span></span>
+          <span class="hq__mark" data-at="6"><span><i>e o andré também embarcou nessa: pura garra.</i></span></span></p>
+        <p data-at="7">hoje: depois de muitas tentativas, criamos nossos sistemas.
+          <span class="hq__mark" data-at="7"><span><i>erro, ajuste, recomeço. até cada projeto sair do editor de código e ir para o ar:</i></span></span>
+          <span class="hq__mark" data-at="8"><span><i>Assim nasceram tiverso, lochub, stockloc, match de blocos, radar dreamie, portal de facilities.</i></span></span></p>
+      </div>
+      <div class="hq__head">
+        <span class="tag r">nossa história</span>
+        <h2 class="big" data-split>de bots a <span class="g">criadores.</span></h2>
+        <p class="lead r">uma historinha da nossa equipe, em quadrinhos.</p>
+      </div>
+    </div>
+    <!-- páginas de gibi: cada passada solta um quadro; terminada a página, a próxima passada vira a página (revealGo, main.js) -->
+    <div class="hq__strip">
+      <!-- página 1: o "antes" — três faixas largas (robôs presos em chamados rotineiros, escritório em volta); data-dir = lado de onde a faixa entra -->
+      <div class="hq__page hq__page--rows is-cur">
+        <div class="hq__slot" data-rv="strip" data-dir="1">
+          <div class="hq__panel">
+            <canvas width="952" height="200" data-scene="bot"></canvas>
+            <p class="hq__bal" style="right:65%;top:4%">tenta, por favor, control + shift + R.</p>
+          </div>
+        </div>
+        <div class="hq__slot" data-rv="strip" data-dir="-1">
+          <div class="hq__panel">
+            <canvas width="952" height="200" data-scene="pass"></canvas>
+            <p class="hq__bal hq__bal--r" style="right:32%;top:4%;max-width:27%">mais uma planilha corrompida. isso podia estar em um banco.</p>
+          </div>
+        </div>
+        <div class="hq__slot" data-rv="strip" data-dir="1">
+          <div class="hq__panel">
+            <canvas width="952" height="200" data-scene="print"></canvas>
+            <p class="hq__bal hq__bal--r" style="right:59%;top:4%">não consigo acessar o software de gerenciamento da impressora.</p>
+          </div>
+        </div>
+      </div>
+      <!-- página 2: a virada — a conversa com o rafael e as noites de estudo do almir, da millena e do andré -->
+      <div class="hq__page">
+        <div class="hq__slot" data-rv="hq">
+          <div class="hq__panel">
+            <canvas width="300" height="200" data-scene="talk"></canvas>
+            <p class="hq__bal hq__bal--tl" style="left:28%;top:3%;max-width:44%">não aguento mais acionar suporte pra resolver software mal escrito por terceiros.</p>
+            <p class="hq__bal hq__bal--tr" style="right:28%;top:41%;max-width:44%">cara, consegue ver o valor de cursos de programação? posso ver se consigo aprovar...</p>
+          </div>
+        </div>
+        <div class="hq__slot" data-rv="hq">
+          <div class="hq__panel">
+            <canvas width="300" height="200" data-scene="study"></canvas>
+            <!-- títulos dos livros da pilha (de cima pra baixo), em cima dos retângulos do BG.study: x 11–45, y 40–65 da cena 150×100 -->
+            <div class="hq__books" style="left:7.3%;top:40%;width:22.7%;height:25%"><i>JAVA</i><i>python</i><i>INFRA</i><i>UI &amp; UX</i><i>CSS</i></div>
+            <span class="hq__code" style="left:8%;top:30%">&lt;/&gt;</span><span class="hq__code" style="left:22%;top:32%;animation-delay:-.8s">{ }</span>
+            <span class="hq__code" style="left:68%;top:30%;animation-delay:-1.6s">js</span><span class="hq__code" style="left:82%;top:10%;animation-delay:-.4s">py</span>
+            <p class="hq__bal hq__bal--r hq__bal--code" style="left:3%;top:3%">if (ser || !ser) {
+  // eis a questão
+}</p>
+          </div>
+        </div>
+        <div class="hq__slot" data-rv="hq">
+          <div class="hq__panel">
+            <canvas width="300" height="200" data-scene="studyM"></canvas>
+            <span class="hq__code" style="left:4%;top:56%">html</span><span class="hq__code" style="left:78%;top:60%;animation-delay:-.8s">css</span>
+            <span class="hq__code" style="left:84%;top:30%;animation-delay:-1.6s">sql</span>
+            <p class="hq__bal" style="right:3%;top:3%">mais um módulo e eu durmo.</p>
+          </div>
+        </div>
+        <div class="hq__slot" data-rv="hq">
+          <div class="hq__panel">
+            <canvas width="300" height="200" data-scene="studyA"></canvas>
+            <span class="hq__code" style="left:72%;top:44%">git</span><span class="hq__code" style="left:86%;top:12%;animation-delay:-.8s">api</span>
+            <span class="hq__code" style="left:88%;top:58%;animation-delay:-1.6s">node</span>
+            <p class="hq__bal hq__bal--r" style="left:3%;top:2%">funcionou! ...mas por quê?</p>
+          </div>
+        </div>
+      </div>
+      <!-- página 3: hoje — os três juntos no escritório (jurema 2.0 no monitor grande, mascote em cima) e o level up embaixo.
+           a cena "team" é 250×100 e o quadro de cima tem a mesma proporção (5:2), então o nome no monitor e a estampa caem no lugar -->
+      <div class="hq__page hq__page--rows hq__page--duo">
+        <div class="hq__slot" data-rv="strip" data-dir="1">
+          <div class="hq__panel">
+            <canvas width="500" height="200" data-scene="team"></canvas>
+            <!-- tela do monitor grande: terminal preto com um trecho do main.js (o laço das piscadas) rolando sem parar -->
+            <div class="hq__term" style="left:45.2%;top:19.5%;width:28.8%;height:39%"><b>Jurema 2.0</b><pre>
+<i class="c">// piscadas: cada pessoa tem o próprio relógio</i>
+setInterval(() =&gt; {
+  <i class="k">if</i> (!slides[cur]?.classList.contains(<i class="s">'hq'</i>)) <i class="k">return</i>;
+  <i class="k">const</i> t = performance.now(); <i class="k">let</i> changed = <i class="n">false</i>;
+  Object.values(BLINKS).flat().forEach(b =&gt; {
+    <i class="k">if</i> (t &gt;= b.next) {
+      b.until = t + <i class="n">160</i>;
+      b.next = t + <i class="n">2500</i> + Math.random() * <i class="n">4500</i>;
+    }
+    <i class="k">if</i> ((t &lt; b.until) !== b.on) {
+      b.on = !b.on; changed = <i class="n">true</i>;
+    }
+  });
+  <i class="k">if</i> (changed) drawHq();
+}, <i class="n">80</i>);
+</pre></div>
+            <p class="hq__bal hq__bal--r" style="right:45%;top:2%">bora!</p>
+          </div>
+        </div>
+        <div class="hq__slot hq__slot--burst" data-rv="burst">
+          <div class="hq__panel hq__panel--burst">
+            <p class="hq__boom">level up!</p>
+            <div class="hq__xp"><i></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ponytail: números ilustrativos — trocar pelos reais antes de apresentar -->
   <!-- data-live + data-panel: a passada seguinte abre a janela com o painel (gráfico) em vez de um iframe -->
-  <section class="slide score" data-dark data-live data-panel="pie-resolucao pie-chamados plataformas">
+  <section class="slide score" data-dark data-live data-panel="pie-chamados pie-resolucao crescimento">
     <span class="tag r">métricas de ti</span>
     <h2 class="big" data-split>a operação, <span class="g">em números.</span></h2>
     <div class="score__grid">
-      <div class="r" data-from="pie-resolucao"><b data-count="93" data-suf="%">0</b><span>taxa de resolução de chamados</span></div>
       <div class="r" data-from="pie-chamados"><b data-count="4820" data-pre="+">0</b><span>chamados resolvidos no ano</span></div>
-      <div class="r" data-from="plataformas"><b data-count="5">0</b><span>plataformas suportadas</span></div>
+      <div class="r" data-from="pie-resolucao"><b data-count="93" data-suf="%">0</b><span>taxa de resolução de chamados</span></div>
+      <div class="r" data-from="crescimento"><b data-count="37" data-pre="+" data-suf="%">0</b><span>de crescimento em desenvolvimento no ano</span></div>
     </div>
   </section>
 
@@ -50,7 +186,7 @@
     <div class="flow__head">
       <span class="tag r">como trabalhamos</span>
       <h2 class="big" data-split>como nasce uma <span class="g">aplicação.</span></h2>
-      <p class="lead r">seis passos, da ideia ao ar.</p>
+      <p class="lead r">sete passos, da ideia ao ar.</p>
     </div>
     <div class="flow">
       <div class="flow__track">
@@ -72,6 +208,18 @@
           <div class="station__txt"><span class="station__n">01</span><h3>a ideia chega</h3><p>por um colaborador, ou quando a necessidade aparece.</p></div>
         </article>
 
+        <!-- 2 project owner: o andré da hq (sprite em pixel art desenhado no canvas pelo FLOW_FX) levanta a mão e assume o projeto -->
+        <article class="station">
+          <div class="viz viz--po">
+            <canvas class="po__cv" width="136" height="120" role="img" aria-label="andré levantando a mão"></canvas>
+            <span class="badge">project owner</span>
+            <span class="bubble b1">deixa comigo!</span>
+            <span class="bubble b2">falo direto com o solicitante</span>
+          </div>
+          <span class="node"><i></i></span>
+          <div class="station__txt"><span class="station__n">02</span><h3>um dono para o projeto</h3><p>escolhemos um project owner na equipe: ele fala direto com quem pediu a aplicação.</p></div>
+        </article>
+
         <article class="station">
           <div class="viz viz--paper">
             <div class="sheet">
@@ -90,7 +238,7 @@
             <span class="postit">tela de login</span>
           </div>
           <span class="node"><i></i></span>
-          <div class="station__txt"><span class="station__n">02</span><h3>papel e caneta</h3><p>descrevemos a ideia e já desenhamos as telas no papel.</p></div>
+          <div class="station__txt"><span class="station__n">03</span><h3>papel e caneta</h3><p>descrevemos a ideia e já desenhamos as telas no papel.</p></div>
         </article>
 
         <article class="station">
@@ -102,7 +250,7 @@
             <span class="scan"></span>
           </div>
           <span class="node"><i></i></span>
-          <div class="station__txt"><span class="station__n">03</span><h3>reaproveitar</h3><p>buscamos nos nossos bancos de código o que já pode ser usado.</p></div>
+          <div class="station__txt"><span class="station__n">04</span><h3>reaproveitar</h3><p>buscamos nos nossos bancos de código o que já pode ser usado.</p></div>
         </article>
 
         <article class="station">
@@ -116,17 +264,28 @@
 <span class="ln">}</span></code></pre>
           </div>
           <span class="node"><i></i></span>
-          <div class="station__txt"><span class="station__n">04</span><h3>mão no código</h3><p>começamos a estruturar a ideia no editor de código.</p></div>
+          <div class="station__txt"><span class="station__n">05</span><h3>mão no código</h3><p>começamos a estruturar a ideia no editor de código.</p></div>
         </article>
 
         <article class="station">
           <div class="viz viz--mvp">
-            <div class="days"><b>0</b><span>dias</span></div>
-            <ol class="cal"><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ol>
+            <div class="app">
+              <div class="app__bar"><i></i><i></i><i></i><span>mvp</span></div>
+              <div class="app__body">
+                <nav class="app__nav"><b></b><i class="on"></i><i></i><i></i></nav>
+                <div class="app__main">
+                  <div class="app__tabs"><span class="on">resumo</span><span>pedidos</span></div>
+                  <div class="app__chart"><i></i><i></i><i></i><i></i><i></i></div>
+                  <span class="app__btn">salvar</span>
+                </div>
+              </div>
+            </div>
+            <i class="tap"></i>
+            <svg class="cursor" viewBox="0 0 16 22"><path d="M1 1V17L5.5 13L8.5 20L11 19L8 12H14Z"/></svg>
             <span class="badge">mvp entregue ✓</span>
           </div>
           <span class="node"><i></i></span>
-          <div class="station__txt"><span class="station__n">05</span><h3>mvp em <span class="g">20 dias</span></h3><p>mvp completamente funcional, entregue em 20 dias.</p></div>
+          <div class="station__txt"><span class="station__n">06</span><h3>entrega do <span class="g">mvp</span></h3><p>funcional e clicável: o solicitante já usa de verdade.</p></div>
         </article>
 
         <article class="station">
@@ -139,24 +298,65 @@
             <span class="badge">entregue ✓</span>
           </div>
           <span class="node"><i></i></span>
-          <div class="station__txt"><span class="station__n">06</span><h3>no ar e monitorada</h3><p>após o período de testes e ajustes, a aplicação é entregue e monitorada.</p></div>
+          <div class="station__txt"><span class="station__n">07</span><h3>no ar e monitorada</h3><p>após o período de testes e ajustes, a aplicação é entregue e monitorada.</p></div>
         </article>
       </div>
     </div>
   </section>
 
-  <!-- xodós: tambor de revólver. o passador gira o tambor e cada aplicação salta da câmara na janela #live. itens em XODOS (main.js) -->
+  <!-- xodós: carrossel 3d (cilindro de cartões com os prints). o passador gira o carrossel e cada aplicação salta do cartão da frente na janela #live. itens em XODOS (main.js) -->
   <section class="slide xodo" data-drum>
     <div class="xodo__head">
       <span class="tag r">xodós da casa</span>
       <h2 class="big" data-split>os xodós <span class="g">da casa.</span></h2>
     </div>
     <div class="xodo__body">
-      <div class="rev r"><div class="rev__cyl"></div><span class="rev__hub"><img src="https://df.trestech.com.br/img/logo1.png" alt=""></span></div>
+      <div class="car r"><div class="car__ring"></div></div>
       <div class="xodo__info">
         <small>aplicações e websites</small>
-        <p>o que a gente <b>criou aqui dentro</b> e tem orgulho de mostrar. a cada passada o tambor gira e a aplicação abre ao vivo.</p>
+        <p>o que a gente <b>criou aqui dentro</b> e tem orgulho de mostrar. a cada passada o carrossel gira e a aplicação abre ao vivo.</p>
       </div>
+    </div>
+  </section>
+
+  <!-- custos: cotado no mercado × gasto em casa. cada passada revela um projeto (revealGo + cost(), main.js);
+       valores em data-cot / data-gas (reais, sem pontos). a economia total, à direita, sobe a cada passada -->
+  <section class="slide cost-slide" data-reveal>
+    <span class="tag r">quanto custaria × quanto custou</span>
+    <h2 class="big" data-split>cotado lá fora, <span class="g">feito em casa.</span></h2>
+    <div class="cost-grid">
+      <div class="cost-rows r">
+        <div class="cost__legend"><span><i class="k-cot"></i>cotado no mercado</span><span><i class="k-gas"></i>gasto pela equipe</span></div>
+        <article class="cost" data-rv="cost" data-cot="27250" data-gas="250"><!-- valores reais (usuário, 2026-11-15): total = criação + suporte + 1 mês de hospedagem -->
+          <img src="img/radar.webp" alt=""><div class="cost__name"><small>sistema</small><h3>radar dreamie</h3></div>
+          <div class="cost__bars"><p class="cost__cot"><i></i><b></b><small class="cost__det">criação R$ 25.000 · suporte R$ 2.000 · hospedagem R$ 250/mês</small></p>
+            <p class="cost__gas"><i></i><b></b><small class="cost__det">criação R$ 0 · suporte R$ 0 · hospedagem R$ 250/mês</small></p></div>
+          <span class="cost__off"></span>
+        </article>
+        <article class="cost" data-rv="cost" data-cot="27250" data-gas="250"><!-- valores reais (usuário, 2026-11-15): os mesmos do radar -->
+          <img src="img/matchdeblocos.webp" alt=""><div class="cost__name"><small>sistema</small><h3>match de blocos</h3></div>
+          <div class="cost__bars"><p class="cost__cot"><i></i><b></b><small class="cost__det">criação R$ 25.000 · suporte R$ 2.000 · hospedagem R$ 250/mês</small></p>
+            <p class="cost__gas"><i></i><b></b><small class="cost__det">criação R$ 0 · suporte R$ 0 · hospedagem R$ 250/mês</small></p></div>
+          <span class="cost__off"></span>
+        </article>
+        <article class="cost" data-rv="cost" data-cot="32250" data-gas="250"><!-- valores reais (usuário, 2026-11-15) -->
+          <img src="img/stockloc.webp" alt=""><div class="cost__name"><small>sistema</small><h3>stockloc</h3></div>
+          <div class="cost__bars"><p class="cost__cot"><i></i><b></b><small class="cost__det">criação R$ 30.000 · manutenção R$ 2.000 · hospedagem R$ 250/mês</small></p>
+            <p class="cost__gas"><i></i><b></b><small class="cost__det">criação R$ 0 · manutenção R$ 0 · hospedagem R$ 250/mês</small></p></div>
+          <span class="cost__off"></span>
+        </article>
+        <article class="cost" data-rv="cost" data-cot="8250" data-gas="250"><!-- valores reais (usuário, 2026-11-15): institucional, sem manutenção -->
+          <img src="img/lochub.webp" alt=""><div class="cost__name"><small>website</small><h3>lochub</h3></div>
+          <div class="cost__bars"><p class="cost__cot"><i></i><b></b><small class="cost__det">criação R$ 8.000 · hospedagem R$ 250/mês</small></p>
+            <p class="cost__gas"><i></i><b></b><small class="cost__det">criação R$ 0 · hospedagem R$ 250/mês</small></p></div>
+          <span class="cost__off"></span>
+        </article>
+      </div>
+      <aside class="cost__total r">
+        <small>economia até aqui</small>
+        <b>R$ 0</b>
+        <dl><dt>cotado</dt><dd data-sum="cot">R$ 0</dd><dt>gasto</dt><dd data-sum="gas">R$ 0</dd></dl>
+      </aside>
     </div>
   </section>
 
@@ -168,27 +368,27 @@
     <div class="soon-grid">
       <span class="soon-grp r" style="grid-column:span 3">websites</span>
       <span class="soon-grp r" style="grid-column:span 2">sistemas</span>
-      <article class="soon r">
+      <article class="soon r" data-rv="soon">
         <div class="sk sk--site"><i></i><i></i><i></i><i></i></div><span class="soon__shine"></span>
         <div class="soon__txt"><span class="soon__n">01 · website</span><h3>dream factory</h3><p>o novo site do grupo: marcas, agenda e contatos numa vitrine só.</p></div>
         <span class="soon__status"><i></i>em breve</span>
       </article>
-      <article class="soon r">
+      <article class="soon r" data-rv="soon">
         <div class="sk sk--site"><i></i><i></i><i></i><i></i></div><span class="soon__shine"></span>
         <div class="soon__txt"><span class="soon__n">02 · website</span><h3>experience</h3><p>o novo site da dream experience, com portfólio e cases de brand experience.</p></div>
         <span class="soon__status"><i></i>em breve</span>
       </article>
-      <article class="soon r">
+      <article class="soon r" data-rv="soon">
         <div class="sk sk--site"><i></i><i></i><i></i><i></i></div><span class="soon__shine"></span>
         <div class="soon__txt"><span class="soon__n">03 · website</span><h3>dream venue</h3><p>os espaços do dream venue, com agenda e contato direto para eventos.</p></div>
         <span class="soon__status"><i></i>em breve</span>
       </article>
-      <article class="soon r">
+      <article class="soon r" data-rv="soon">
         <div class="sk sk--pipe"><i></i><i></i><i></i><i></i></div><span class="soon__shine"></span>
         <div class="soon__txt"><span class="soon__n">04 · performance</span><h3>pipeline interativo</h3><p>cada etapa da área de performance visível e atualizada em tempo real.</p></div>
         <span class="soon__status"><i></i>em breve</span>
       </article>
-      <article class="soon r">
+      <article class="soon r" data-rv="soon">
         <div class="sk sk--stock"><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="soon__shine"></span>
         <div class="soon__txt"><span class="soon__n">05 · facilities</span><h3>controle de estoque</h3><p>entradas, saídas e alerta de reposição para o facilities.</p></div>
         <span class="soon__status"><i></i>em breve</span>
@@ -220,7 +420,7 @@
     </div>
     <div class="frame">
       <iframe title="live preview" allow="fullscreen; clipboard-read; clipboard-write"></iframe>
-      <div class="loading"><img src="https://df.trestech.com.br/img/logo1.png" alt=""><span class="kicker">carregando</span></div>
+      <div class="loading"><img src="vendor/logo1.png" alt=""><span class="kicker">carregando</span></div>
       <!-- painéis: gráficos preenchidos pelo main.js (CHARTS) -->
       <div class="panel" id="pie-resolucao" data-addr="painel de chamados · taxa de resolução">
         <div class="pie"><svg viewBox="0 0 200 200" role="img" aria-label="taxa de resolução de chamados"></svg><div class="pie__center"></div></div>
@@ -238,42 +438,14 @@
           <ul class="legend"></ul>
         </div>
       </div>
-      <!-- plataformas: o passador percorre os cards (data-step) e o painel ao lado mostra o descritivo de cada um.
-           texto de cada plataforma: edite o <p class="plat__desc"> do card (fica escondido no card, aparece no painel) -->
-      <div class="panel panel--list" id="plataformas" data-addr="ti · plataformas suportadas">
-        <div class="plats__main">
-          <h2 class="big">plataformas <span class="g">suportadas</span> pela ti</h2>
-          <div class="plats">
-            <section>
-              <h3 class="plats__head">de terceiros <span>2</span></h3>
-              <ul>
-                <li class="plat" data-step><img src="img/mopa.webp" alt="tela inicial do mopa"><div class="plat__name"><b>mopa</b></div>
-                  <p class="plat__desc">aprovações financeiras num só painel: orçamentos e solicitações de pagamento, com o que já foi aprovado, o que está em análise e o que aguarda a sua aprovação.</p></li>
-                <li class="plat" data-step><img src="img/mocah.webp" alt="tela inicial do mocah"><div class="plat__name"><b>mocah</b></div>
-                  <p class="plat__desc">o mesmo fluxo de aprovações aplicado a pessoas: headcount e contratações, do pedido à aprovação final.</p></li>
-              </ul>
-            </section>
-            <section>
-              <h3 class="plats__head">feitas em casa <span>3</span></h3>
-              <ul>
-                <li class="plat" data-step><img src="img/stockloc.webp" alt="tela de login do stockloc"><div class="plat__name"><b>stockloc</b></div>
-                  <p class="plat__desc">estoque e reservas dos eventos, sem planilha: disponibilidade dos ativos, reservas automáticas e controle de estoque.</p></li>
-                <li class="plat" data-step><img src="img/matchdeblocos.webp" alt="tela de login do match de blocos"><div class="plat__name"><b>match de blocos</b></div>
-                  <p class="plat__desc">feito para o carnaval de rua do carnabrasil: briefing da marca, base de blocos e o plano que cabe na verba, num lugar só.</p></li>
-                <li class="plat" data-step><img src="img/radar.webp" alt="tela de login do radar dreamie"><div class="plat__name"><b>radar dreamie</b></div>
-                  <p class="plat__desc">priorização estratégica de eventos: cinco objetivos, sete critérios e uma régua única para decidir onde a marca deve estar.</p></li>
-              </ul>
-            </section>
-          </div>
+      <!-- crescimento em um ano por área: barras (main.js, CHARTS.crescimento) — mesma lógica das roscas: número contando, legenda, hover e passador item a item -->
+      <div class="panel" id="crescimento" data-addr="equipe de ti · crescimento em um ano">
+        <div class="bars"><div class="pie__center"></div><svg viewBox="0 0 200 200" role="img" aria-label="crescimento em um ano: desenvolvimento e infra"></svg></div>
+        <div>
+          <span class="tag">equipe de ti</span>
+          <h2 class="big">crescimento em <span class="g">um ano</span></h2>
+          <ul class="legend"></ul>
         </div>
-        <aside class="plat-info" aria-live="polite">
-          <div class="plat-info__body">
-            <span class="tag">visão geral</span>
-            <h3>5 plataformas</h3>
-            <p>2 de terceiros e 3 feitas em casa, todas suportadas pela equipe de ti.</p>
-          </div>
-          <ol class="plat-info__dots"><li></li><li></li><li></li><li></li><li></li></ol>
-        </aside>
       </div>
     </div>
   </div>
@@ -281,7 +453,7 @@
 
 <script src="main.js"></script>
 <!-- fx3d: experimento three.js nos painéis do slide 2. para desligar, apague estas 3 linhas -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="vendor/three.min.js"></script>
 <script src="img/prints.js"></script>
 <script src="fx3d.js"></script>
 </body>
