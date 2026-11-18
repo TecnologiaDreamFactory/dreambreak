@@ -14,8 +14,8 @@
 .fx3d .pie > canvas{position:absolute;left:-14%;top:-14%;width:128%;height:128%}
 .fx3d .pie__center{z-index:1}
 .fx3d .pie__center span{margin-top:0}
-.fx3d .pie__lbl{position:absolute;left:0;top:0;z-index:1;font-size:clamp(12px,1.4vw,22px);font-weight:700;letter-spacing:-.02em;color:#fff;
-  text-shadow:0 1px 8px rgba(0,0,0,.35);pointer-events:none;white-space:nowrap}
+.fx3d .pie__lbl{position:absolute;left:0;top:0;z-index:1;font-size:clamp(calc(12 * var(--px)),1.4vw,calc(22 * var(--px)));font-weight:700;letter-spacing:-.02em;color:#fff;
+  text-shadow:0 calc(1 * var(--px)) calc(8 * var(--px)) rgba(0,0,0,.35);pointer-events:none;white-space:nowrap} /* --px (styles.css): cresce com a tela acima de 1920×1080 */
 .fx3d .bars{position:relative}
 .fx3d .bars > canvas{position:absolute;pointer-events:none}
 .fx3d .bars svg{position:relative;z-index:1}

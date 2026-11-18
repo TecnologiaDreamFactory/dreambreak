@@ -282,6 +282,8 @@ const XODOS = [
     desc: 'mapeamento · atividades · processos · ações: as tarefas da equipe com scrum no quadro kanban. o famoso scrumban.' },
   { name: 'portal de facilities', group: 'websites', url: 'https://facilities.dreamfactory.com.br/', img: 'img/facilities.webp', embed: false, video: 'video/facilities.mp4',
     desc: 'administração e facilities do escritório em um só lugar: boas práticas, serviços e pedidos para a equipe.' },
+  { name: 'suprimentos dream', group: 'aplicações', url: 'https://suprimentos-dream-production.up.railway.app/', img: 'img/suprimentos.webp', embed: false,
+    desc: 'comparador de cotações com ia: envie de 2 a 10 propostas de fornecedores (excel, word ou pdf) e a comparação sai pronta.' },
 ];
 const drum = { i: -1, seen: false }, DRUM_STEP = 360 / XODOS.length;
 XODOS.forEach((x, k) => x.id = 'app-' + k);
@@ -291,7 +293,7 @@ $$('[data-drum]').forEach(s => {
   $('.car', s).style.setProperty('--k', 1.15 / (2 * Math.tan(Math.PI / XODOS.length))); // raio do cilindro em larguras de cartão (com folga entre eles)
 });
 $('#live .frame').insertAdjacentHTML('beforeend', XODOS.map(x => `<div class="panel panel--app" id="${x.id}" data-addr="${x.url ? new URL(x.url).host : x.name}" data-url="${x.url || ''}">${x.embed === false
-  ? `${x.video ? `<video src="${x.video}" poster="${x.img}"${x.vstyle ? ` style="${x.vstyle}"` : ''} muted loop playsinline preload="auto" aria-label="${x.name} funcionando"></video>` // sem o botão: cobriria o vídeo; o "nova aba" da barra abre o sistema
+  ? `${x.video ? `<video src="${x.video}" poster="${x.img}"${x.vstyle ? ` style="${x.vstyle}"` : ''} muted loop playsinline preload="${matchMedia('(pointer:coarse)').matches ? 'metadata' : 'auto'}" aria-label="${x.name} funcionando"></video>` // sem o botão: cobriria o vídeo; o "nova aba" da barra abre o sistema
     : `<img src="${x.img}" alt="tela do ${x.name}">`}`
   : `<iframe title="${x.name}" data-src="${x.url}" allow="fullscreen; clipboard-read; clipboard-write"></iframe><div class="loading"><img src="vendor/logo1.png" alt=""><span class="kicker">carregando</span></div>`}</div>`).join(''));
 $$('.panel--app iframe').forEach(f => f.addEventListener('load', () => f.src && f.nextElementSibling.classList.add('done')));
@@ -417,7 +419,8 @@ function hqHead(s, head, i, mode) {
   const now = { x: gsap.getProperty(head, 'x'), y: gsap.getProperty(head, 'y'), scale: gsap.getProperty(head, 'scale') };
   gsap.set(head, { x: 0, y: 0, scale: 1 });
   const r = head.getBoundingClientRect(), sr = s.getBoundingClientRect();
-  const k = Math.min(1.9, sr.width * .62 / r.width, sr.height * .6 / r.height), pad = parseFloat(getComputedStyle(s).paddingLeft);
+  const k0 = Math.min(1.9, sr.width * .62 / r.width, sr.height * .6 / r.height);
+  const k = innerWidth < innerHeight ? Math.max(1.3, k0) : k0, pad /* celular em pé: a caixa ocupa a largura toda e a conta encolhia o título */ = parseFloat(getComputedStyle(s).paddingLeft);
   // na horizontal: borda esquerda (já ampliada) na margem do slide, como os outros títulos; na vertical: centro
   gsap.fromTo(head, now, { x: sr.left + pad + r.width * k / 2 - (r.left + r.width / 2), y: sr.top + sr.height / 2 - (r.top + r.height / 2), scale: k,
     transformOrigin: '50% 50%', duration: dur, ease: 'expo.inOut' });
@@ -1109,8 +1112,9 @@ function officeTop(pt, f, W = WW) {
 
 const CAST = { talk: [almirStand, rafael], bot: [robot], pass: [botPass], print: [botPrint], study: [almirStudy, studyLaptop], studyM: [millenaStudy, laptop], studyA: [andreStudy], team: [teamMillena, teamAlmir, teamAndre, teamOrb, teamLaptops] };
 const LAYERS = {};
-function buildHq() {
-  Object.keys(BG).forEach(k => LAYERS[k] = [0, 1].map(f => {
+// uma cena por vez (cada uma leva uns 300ms; todas juntas travavam a abertura do deck por segundos no celular)
+function buildScene(k) {
+  LAYERS[k] = [0, 1].map(f => {
     const dx = WIDE[k], c = cv(k === 'team' ? TEAM_W : dx === undefined ? HW : WW), pt = painter(c.getContext('2d'));
     if (dx !== undefined) office(pt, f, k, dx);
     pt.x.translate(dx || 0, 0); BG[k](pt, f); pt.x.setTransform(S, 0, 0, S, 0, 0);
@@ -1118,9 +1122,9 @@ function buildHq() {
     pt.x.resetTransform();
     CAST[k].forEach(d => pt.x.drawImage(sprite(d, spriteW(k))[f], (dx || 0) * S, 0));
     return c;
-  }));
-  Object.keys(BG).forEach(k => BLINKS[k] = CAST[k].filter(d => HUMANS.includes(d)).map(d => ({
-    img: [0, 1].map(f => blinkLayer(d, f, spriteW(k))), dx: WIDE[k] || 0, on: false, until: 0, next: performance.now() + 1500 + Math.random() * 4500 })));
+  });
+  BLINKS[k] = CAST[k].filter(d => HUMANS.includes(d)).map(d => ({
+    img: [0, 1].map(f => blinkLayer(d, f, spriteW(k))), dx: WIDE[k] || 0, on: false, until: 0, next: performance.now() + 1500 + Math.random() * 4500 }));
 }
 // piscadas: cada pessoa tem o próprio relógio (intervalo aleatório de 2,5 a 7s), então ninguém pisca junto.
 // camada da piscada = só os pixels que mudam com o olho fechado, desenhada por cima da cena
@@ -1133,7 +1137,6 @@ function blinkLayer(d, f, w) {
   xb.putImageData(img, 0, 0);
   return b;
 }
-buildHq();
 let hqF = 0;
 $$('.hq__term pre').forEach(p => p.innerHTML += p.innerHTML); // código em dobro: rolar meia altura e voltar ao início não dá salto
 $$('.hq canvas[data-scene]').forEach(c => (LOGOS[c.dataset.scene] || []).forEach(([draw, ax, ay, dw, dh, k = 1]) => { // estampas e adesivos (ver LOGOS)
@@ -1143,10 +1146,13 @@ $$('.hq canvas[data-scene]').forEach(c => (LOGOS[c.dataset.scene] || []).forEach
   Object.assign(o.style, { position: 'absolute', left: (ax - w / 2) / sw + '%', top: ay - h / 2 + '%', width: w / sw + '%', height: h + '%' });
 }));
 const drawHq = () => $$('.hq canvas[data-scene]').forEach(c => {
-  const x = c.getContext('2d'), k = c.dataset.scene; x.clearRect(0, 0, c.width, c.height); x.drawImage(LAYERS[k][hqF], 0, 0);
+  const x = c.getContext('2d'), k = c.dataset.scene; if (!LAYERS[k]) return; // cena ainda não montada
+  x.clearRect(0, 0, c.width, c.height); x.drawImage(LAYERS[k][hqF], 0, 0);
   BLINKS[k].forEach(b => b.on && x.drawImage(b.img[hqF], b.dx * S, 0));
 });
-drawHq();
+// monta as cenas depois que o deck já apareceu, uma por tarefa (o passador continua respondendo entre elas)
+const hqQueue = Object.keys(BG);
+requestAnimationFrame(() => setTimeout(function next() { const k = hqQueue.shift(); if (!k) return; buildScene(k); drawHq(); setTimeout(next, 0); }));
 setInterval(() => { if (slides[cur]?.classList.contains('hq')) { hqF ^= 1; drawHq(); } }, 450);
 setInterval(() => {
   if (!slides[cur]?.classList.contains('hq')) return;
@@ -1288,6 +1294,16 @@ function step(d) {
   else go(cur + d);
 }
 $('#restart').addEventListener('click', () => go(0));
+
+/* celular: arrastar o dedo para o lado = passador (esquerda = próximo, direita = anterior). gesto mais vertical que horizontal é rolagem: ignora */
+let touch0 = null;
+addEventListener('touchstart', e => { touch0 = e.touches.length === 1 ? e.touches[0] : null; }, { passive: true });
+addEventListener('touchend', e => {
+  if (!touch0) return;
+  const t = e.changedTouches[0], dx = t.clientX - touch0.clientX, dy = t.clientY - touch0.clientY;
+  touch0 = null;
+  if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) step(dx < 0 ? 1 : -1);
+}, { passive: true });
 
 /* ====== passador (remote) + teclado ======
    obs: com o foco dentro do iframe, as teclas vão para a aplicação — feche pelo botão. */
