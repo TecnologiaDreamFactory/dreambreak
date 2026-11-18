@@ -692,7 +692,7 @@ body{touch-action:manipulation} /* sem o atraso do toque duplo nos botões */
   .win__bar .d{width:10px;height:10px}
   .addr{margin:0 4px;padding:6px 10px;font-size:11px}
   .act{font-size:12px;padding:6px 8px}
-  .panel{grid-template-columns:minmax(0,1fr);align-content:center;gap:28px;padding:18px 20px}
+  .panel{grid-template-columns:minmax(0,1fr);align-content:safe center;gap:28px;padding:18px 20px} /* safe: em tela baixa (390×664) o conteúdo passa da janela; centrado, a sobra saía por cima e cortava o número, sem rolagem */
   .panel .big{font-size:24px}
   .pie,.bars{width:min(66vw,36dvh)}
   .legend li{font-size:14px;padding:8px 0}

@@ -152,11 +152,15 @@
     const C = new T.Vector3(650, 400, 2000); // olho longe, acima e à direita: topo e lateral com a mesma espessura nas duas barras
     camera.position.copy(C);
     s.size = () => {
-      const k = host.offsetWidth / host.getBoundingClientRect().width, r = svg.getBoundingClientRect(), hr = host.getBoundingClientRect();
-      const u = r.width * k / 200, w = (200 + 2 * BM) * u; // px por unidade do viewBox
-      if (!w || w === s.w) return;
+      // a 1ª medida cai no começo do flip da janela, com escala diferente em x e y: cada eixo desfaz a sua.
+      // com uma escala só (a de x) o canvas ficava alto demais e as barras 3d flutuavam acima da base, com o valor dentro delas
+      const r = svg.getBoundingClientRect(), hr = host.getBoundingClientRect(), kx = host.offsetWidth / hr.width, ky = host.offsetHeight / hr.height;
+      const u = r.width * kx / 200, w = (200 + 2 * BM) * u; // px por unidade do viewBox
+      if (!w) return;
+      Object.assign(s.canvas.style, { left: (r.left - hr.left) * kx - BM * u + 'px', top: (r.top - hr.top) * ky - BM * u + 'px' });
+      if (w === s.w) return;
       s.w = w; s.renderer.setSize(w, w, false);
-      Object.assign(s.canvas.style, { left: (r.left - hr.left) * k - BM * u + 'px', top: (r.top - hr.top) * k - BM * u + 'px', width: w + 'px', height: w + 'px' });
+      Object.assign(s.canvas.style, { width: w + 'px', height: w + 'px' });
       // frustum fora do eixo: o retângulo [-BM, 200+BM] do plano z=0 enche o canvas
       const n = 1, f = 5000, d = C.z;
       camera.projectionMatrix.makePerspective((-BM - C.x) / d * n, (200 + BM - C.x) / d * n, (BM - C.y) / d * n, (-200 - BM - C.y) / d * n, n, f);
